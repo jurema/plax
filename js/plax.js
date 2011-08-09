@@ -36,11 +36,11 @@
   })
 
   // Public Methods
-  $.fn.plaxify = function (params){
+  $.fn.plaxify = function (params) {
 
     return this.each(function () {
 
-      var layer = {"xRange":0,"yRange":0,"invert":false}
+      var layer = {"xRange":0,"yRange":0,"invert":false,"stopAtX":false,"stopAtY":false}
       for (var param in params) {
         if (layer[param] == 0) {
           layer[param] = params[param]
@@ -63,69 +63,89 @@
     })
   }
 
-  // Are we on a device with an accelerometer, or are we mouse-based?
-  function moveable(){
-    return window.DeviceMotionEvent != undefined
-  }
-
   function plaxifier(e) {
     if (new Date().getTime() < lastRender + delay) return;
       lastRender = new Date().getTime();
 
-    var x = e.pageX,
-        y = e.pageY;
+    var x = $(window).scrollLeft() + docWidth / 2,
+        y = $(window).scrollTop() + docHeight / 2;
 
-    if(moveable()){
-      var i = (window.orientation +180) %360 / 90
-      // portrait(%2==0) or landscape
-      var accel= e.accelerationIncludingGravity;
-
-      var tmp_x = i%2==0 ? -accel.x :accel.y;
-      var tmp_y = i%2==0 ? accel.y :accel.x;
-      // facing up(>=2) or down
-      x = i>=2 ? tmp_x:-tmp_x;
-      y = i>=2 ? tmp_y:-tmp_y;
-    }
-
-    var hRatio = x/(moveable() ? 5 : docWidth),
-        vRatio = y/(moveable() ? 5 : docHeight),
+    var hRatio = x/docWidth,
+        vRatio = y/docHeight,
         layer, i;
 
     for (i = layers.length; i--;) {
-      layer = layers[i]
+      layer = layers[i];
+      var tmpx, tmpy;
       if (layer.invert != true) {
-        layer.obj
-          .css('left',layer.startX + (layer.xRange*hRatio))
-          .css('top', layer.startY + (layer.yRange*vRatio))
+        tmpx = layer.startX + (layer.xRange*hRatio);
+        tmpy = layer.startY + (layer.yRange*vRatio);
+
+        if (layer.stopAtX) {
+          if (layer.stopAtX === tmpx) {
+            return false;
+          }
+          else if (layer.stopAtX > tmpx) {
+            layer.obj.css({top:layer.stopAtX});
+          }
+          else {
+            layer.obj.css({top:tmpx});
+          }
+        }
+
+        if (layer.stopAtY) {
+          if (layer.stopAtY === tmpy) {
+            return false;
+          }
+          else if (layer.stopAtY > tmpy) {
+            layer.obj.css({top:layer.stopAtY});
+          }
+          else {
+            layer.obj.css({top:tmpy});
+          }
+        }
       } else {
-        layer.obj
-          .css('left',layer.startX - (layer.xRange*hRatio))
-          .css('top', layer.startY - (layer.yRange*vRatio))
+        tmpx = layer.startX - (layer.xRange*hRatio);
+        tmpy = layer.startY - (layer.yRange*vRatio);
+
+        if (layer.stopAtX) {
+          if (layer.stopAtX === tmpx) {
+            return false;
+          }
+          else if (layer.stopAtX > tmpx) {
+            layer.obj.css({top:layer.stopAtX});
+          }
+          else {
+            layer.obj.css({top:tmpx});
+          }
+        }
+
+        if (layer.stopAtY) {
+          if (layer.stopAtY === tmpy) {
+            return false;
+          }
+          else if (layer.stopAtY > tmpy) {
+            layer.obj.css({top:layer.stopAtY});
+          }
+          else {
+            layer.obj.css({top:tmpy});
+          }
+        }
       }
     }
   }
 
   $.plax = {
     enable: function(){
-      $(document).bind('mousemove.plax', function (e) {
+      $(window).bind('scroll', function (e) {
         plaxifier(e)
       })
-
-    if(moveable()){
-      window.ondevicemotion = function(e){plaxifier(e)};
-    }
-
     },
     disable: function(){
-      $(document).unbind('mousemove.plax')
+      $(window).unbind('scroll')
       window.ondevicemotion = undefined;
     }
-  }
-
-  if (typeof ender !== 'undefined') {
-    $.ender($.fn, true)
-  }
-
+  };
 })(function () {
   return typeof jQuery !== 'undefined' ? jQuery : ender
 }())
