@@ -40,7 +40,8 @@
 
     return this.each(function () {
 
-      var layer = {"xRange":0,"yRange":0,"invert":false,"stopAtX":false,"stopAtY":false}
+      var layer = {"xRange":0,"yRange":0,"invert":0,"stopAtX":0,"stopAtY":0};
+
       for (var param in params) {
         if (layer[param] == 0) {
           layer[param] = params[param]
@@ -86,11 +87,14 @@
             return false;
           }
           else if (layer.stopAtX > tmpx) {
-            layer.obj.css({top:layer.stopAtX});
+            layer.obj.css({left:layer.stopAtX});
           }
           else {
-            layer.obj.css({top:tmpx});
+            layer.obj.css({left:tmpx});
           }
+        }
+        else {
+          layer.obj.css({left:tmpx});
         }
 
         if (layer.stopAtY) {
@@ -104,6 +108,10 @@
             layer.obj.css({top:tmpy});
           }
         }
+        else {
+          layer.obj.css({top:tmpy});
+        }
+
       } else {
         tmpx = layer.startX - (layer.xRange*hRatio);
         tmpy = layer.startY - (layer.yRange*vRatio);
@@ -113,11 +121,14 @@
             return false;
           }
           else if (layer.stopAtX > tmpx) {
-            layer.obj.css({top:layer.stopAtX});
+            layer.obj.css({left:layer.stopAtX});
           }
           else {
-            layer.obj.css({top:tmpx});
+            layer.obj.css({left:tmpx});
           }
+        }
+        else {
+          layer.obj.css({left:tmpx});
         }
 
         if (layer.stopAtY) {
@@ -130,6 +141,9 @@
           else {
             layer.obj.css({top:tmpy});
           }
+        }
+        else {
+          layer.obj.css({top:tmpy});
         }
       }
     }

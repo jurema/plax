@@ -14,6 +14,8 @@
       body {
         background: #ebeae6 url(img/body_bg.png) top left repeat;
         position: relative;
+        height: 1000px;
+        width: 1000px;
       }
       div#shell {
         display: block;
@@ -53,8 +55,8 @@
     <script type="text/javascript">
       $(document).ready(function () {        
         $('#plax-sphere-1').plaxify({"yRange":140});
-        $('#plax-logo').plaxify({"yRange":120});
-        $('#plax-sphere-2').plaxify({"yRange":110});
+        $('#plax-logo').plaxify({"yRange":120, xRange:100});
+        $('#plax-sphere-2').plaxify({"yRange":110, xRange:100});
         $('#plax-sphere-3').plaxify({"yRange":140,"invert":true});
         $.plax.enable();
       })
